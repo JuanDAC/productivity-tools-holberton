@@ -2,7 +2,7 @@ from bs4 import BeautifulSoup
 import requests
 import urllib
 
-cookie = {"_holberton_intranet_session": "Njk2MHlXWDFZVDlaK3pxcFBvYXd5MHgxUUN4YmJzbUNGVGNkd2pTTmdTYlk0cEpmN1lRbnM5eTNHelVvSzYxRzRTN1hRaE5rcDFMbjFUSmVrbjVJSDZKeXA1cWlTWDd4Q04wZHAxMWVkMEZncmIreStUc0laR1czWC9PMjVpN2xXYUtXeUJ2ZDRYdDlIWHRIa2Y4L01STEdrajlsdUh0STZrMDl1TThWdDU2MElPMDRNNW9QYTlVclA5SlBDelc3RlF5TlBBU1UySTZOemJjM2NYNVRxUT09LS1ydUZ1WlVhcWtwdENxeE9xWFVkTUNBPT0%3D--5cd4cb5cbd102e1957e7f64bec7d034e7775367d"}
+cookie = {"_holberton_intranet_session": "COOKIE_HERE"}
 url = "https://intranet.hbtn.io/projects/228"
 
 print("\nWorking...\n")
