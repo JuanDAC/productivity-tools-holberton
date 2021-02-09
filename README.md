@@ -11,7 +11,7 @@
 * Add structure of files
 
 
-## * Discord:
+## Discord:
 * NEW PROJECT:
 * !repo
 * !ctasks (how many tasks)
