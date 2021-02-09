@@ -2,18 +2,28 @@ from bs4 import BeautifulSoup
 from getpass import getpass
 import requests
 import urllib
+from os import path, makedirs
 
-print("Please enter your username: ", end='')
-user = input()
-password = getpass()
-print("You entered a password!")
+if path.exists("/home/ubuntu/.hbtn_utils/cookie.txt") is False:
+    print("Please enter your username: ", end='')
+    user = input()
+    password = getpass()
+    makedirs("/home/ubuntu/.hbtn_utils", exist_ok=True)
+    """ WE NEED TO DO THE REQUEST TO LOGIN """
+    with open("/home/ubuntu/.hbtn_utils/cookie.txt", "w") as user_cookie:
+        user_cookie.write("Here should be the cookie")
 
-""" We need then to login and save the cookie in a file
+with open('/home/ubuntu/.hbtn_utils/cookie.txt', 'r') as user_cookie:
+    print(user_cookie.read())
+exit()
+
+"""
+We need then to login and save the cookie in a file
 If the file with cookie content doesn't exist, ask for credentials
 If credentials sucessful, then we need to get the cookie
 """
 
-cookie = {"_holberton_intranet_session": "COOKIE_HERE"}
+cookie = {"_holberton_intranet_session": user_cookie}
 url = "https://intranet.hbtn.io/projects/228"
 
 print("\nWorking...\n")
