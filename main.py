@@ -2,13 +2,15 @@ from bs4 import BeautifulSoup
 from getpass import getpass
 import requests
 import urllib
-from os import path, makedirs
+from os import path, makedirs, environ
 
-if path.exists("/home/ubuntu/.hbtn_utils/cookie.txt") is False:
+
+Home=environ['HOME'] + '/.hbtn_utils/cookie.txt'
+if path.exists(Home) is False:
     print("Please enter your username: ", end='')
     user = input()
     password = getpass()
-    makedirs("/home/ubuntu/.hbtn_utils", exist_ok=True)
+    makedirs(Home, exist_ok=True)
     """ WE NEED TO DO THE REQUEST TO LOGIN """
     # if session.get == 200:
     #     with open("/home/ubuntu/.hbtn_utils/cookie.txt", "w") as user_cookie:
@@ -18,17 +20,17 @@ if path.exists("/home/ubuntu/.hbtn_utils/cookie.txt") is False:
 
 with requests.Session() as log:
     payload={
-        "user[login]": "LOGIN",
-        "user[password]": "PASSWORD",
+        "user[login]": "2187@holbertonschool.com",
+        "user[password]": "kvsK%v9Yqa3Y",
         "commit": "Log in"
-}
+    }
     r = log.get("https://intranet.hbtn.io/auth/sign_in")
     soup = BeautifulSoup(r.content, 'html5lib')
     payload['authenticity_token'] = soup.find('input', attrs={'name': 'authenticity_token'})['value']
     pos = log.post("https://intranet.hbtn.io/auth/sign_in", data=payload)
     print(pos.content)
 
-#with open('/home/ubuntu/.hbtn_utils/cookie.txt', 'r') as user_cookie:
+#with open(Home, 'r') as user_cookie:
 #    print(user_cookie.read())
 exit()
 
