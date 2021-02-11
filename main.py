@@ -30,6 +30,7 @@ with requests.Session() as log:
     print(user)
     pos = log.post("https://intranet.hbtn.io/auth/sign_in", data=payload)
     hbtn_cookie=pos.cookies.get_dict()
+    print(hbtn_cookie)
 
 #with open(Home, 'r') as user_cookie:
 #    print(user_cookie.read())
