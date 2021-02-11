@@ -20,15 +20,16 @@ if path.exists(Home) is False:
 
 with requests.Session() as log:
     payload={
-        "user[login]": "2187@holbertonschool.com",
-        "user[password]": "kvsK%v9Yqa3Y",
+        "user[login]": user,
+        "user[password]": password,
         "commit": "Log in"
     }
     r = log.get("https://intranet.hbtn.io/auth/sign_in")
     soup = BeautifulSoup(r.content, 'html5lib')
     payload['authenticity_token'] = soup.find('input', attrs={'name': 'authenticity_token'})['value']
+    print(user)
     pos = log.post("https://intranet.hbtn.io/auth/sign_in", data=payload)
-    print(pos.content)
+    hbtn_cookie=pos.cookies.get_dict()
 
 #with open(Home, 'r') as user_cookie:
 #    print(user_cookie.read())
