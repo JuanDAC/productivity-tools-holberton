@@ -17,11 +17,19 @@ if path.exists("/home/ubuntu/.hbtn_utils/cookie.txt") is False:
 
 
 with requests.Session() as log:
-    pos = log.post("https://intranet.hbtn.io/auth/sign_in", data={"user[login]": "2187@holbertonschool.com", "user[password]": "kvsK%v9Yqa3Y"})
-    r = session.get("https://intranet.hbtn.io/projects/261")
-    print(r.text)
-with open('/home/ubuntu/.hbtn_utils/cookie.txt', 'r') as user_cookie:
-    print(user_cookie.read())
+    payload={
+        "user[login]": "LOGIN",
+        "user[password]": "PASSWORD",
+        "commit": "Log in"
+}
+    r = log.get("https://intranet.hbtn.io/auth/sign_in")
+    soup = BeautifulSoup(r.content, 'html5lib')
+    payload['authenticity_token'] = soup.find('input', attrs={'name': 'authenticity_token'})['value']
+    pos = log.post("https://intranet.hbtn.io/auth/sign_in", data=payload)
+    print(pos.content)
+
+#with open('/home/ubuntu/.hbtn_utils/cookie.txt', 'r') as user_cookie:
+#    print(user_cookie.read())
 exit()
 
 """
