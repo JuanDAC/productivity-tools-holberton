@@ -54,7 +54,7 @@ content = tmp.content
 web = BeautifulSoup(content, 'html.parser')
 
 # Search for data-confirm
-hml = web.find_all("a", {"data-confirm": True})
+hml = web.find("a", {"data-confirm": True})
 if hml:
     opt = sexsion.get(url + '/unlock_optionals', cookies=cookie)
 print(hml)
