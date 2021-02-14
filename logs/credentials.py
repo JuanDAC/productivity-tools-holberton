@@ -22,6 +22,5 @@ def login():
 		if "Invalid Email or password." in pos.text:
 			print("Your credentials are wrong. Please try again.")
 			login()
-			# exit() # Or do a loop.
 		return(pos.cookies.get_dict())
 

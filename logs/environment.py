@@ -1,5 +1,6 @@
 from os import path, makedirs, environ
 from env import WORKING_DIRECTORY, COOKIE;
+from ast import literal_eval
 
 def exist_directory():
 	return(path.exists(WORKING_DIRECTORY))
@@ -23,5 +24,5 @@ def create_cookie(hbtn_cookie):
 # TODO add literal eval
 def get_cookie():
 	with open(COOKIE, 'r') as user_cookie:
-		return(user_cookie.read())
+		return(literal_eval(ser_cookie.read()))
 
