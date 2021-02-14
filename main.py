@@ -5,8 +5,8 @@ from logs.environment import * as env
 def main():
 	if env.exist_directory():
 		env.create_directory()
-	if not exist_cookie():
-		create_cookie(login())
+	if not env.exist_cookie():
+		env.create_cookie(login())
 
 if __name__ == '__main__':
 	main()
