@@ -3,13 +3,16 @@ from logs.env import WORKING_DIRECTORY, COOKIE;
 from ast import literal_eval
 
 def exist_directory():
+	print("Directory is %s " % WORKING_DIRECTORY)
+	print(path.exists(WORKING_DIRECTORY))
 	return(path.exists(WORKING_DIRECTORY))
 
 def create_directory():
 	try:
+		print("Creating direction")
 		makedirs(WORKING_DIRECTORY, exist_ok=True)
 	except OSError:
-		print ("Creation of the directory %s failed" % WORKING_DIRECTORY)
+		print("Creation of the directory %s failed" % WORKING_DIRECTORY)
 		return(False);
 	else:
 		return(True)
