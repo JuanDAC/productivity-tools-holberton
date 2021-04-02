@@ -1,7 +1,7 @@
 # Productivity-tools-holberton
 ## Things to do:
-* Login / Credentials
-* Repository  name
+* Login / Credentials ✔️
+* Repository name
 * File names
 * Main's content
 * Select a project
@@ -15,7 +15,6 @@
 * NEW PROJECT:
 * !repo
 * !ctasks (how many tasks)
-
 * !verify with cookie / credentials (Spoiler mode)
 * !files
 * !main-??
