@@ -3,6 +3,7 @@ import cmd
 from logs.environment import get_cookie
 from bs4 import BeautifulSoup
 import requests
+import re
 """ Interactive console to get projects, review, files, and more. """
 
 if __name__ == "__main__":
@@ -53,7 +54,16 @@ class Console(cmd.Cmd):
         """ Show projects running at the moment"""
         html = self.connection.get(
             "https://intranet.hbtn.io/dashboards/my_current_projects")
-        print(html.text)
+        projects_block_html = re.findall(
+            r"<ul class=\"list-group gap\">.*<span class=\"bpi-status\">",
+            html.text, flags=re.DOTALL)
+        project_list = re.findall(r"/[0-9]{1,3}\".*<",
+                                  "\n".join(projects_block_html))
+        print("\n".join(project_list).
+              replace("\"", " ").
+              replace("<", "").
+              replace(">", "").
+              replace("/", ""))
 
 
 console_loop = Console()
