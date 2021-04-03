@@ -24,6 +24,8 @@ class Console(cmd.Cmd):
     """
     prompt = "Console-> "
     cookie = get_cookie()
+    web = "https://intranet.hbtn.io/"
+    current = 0 # This varable will be used when you select a project
 
     def __init__(self):
         """ Stablish the connection to persistent """
@@ -32,9 +34,7 @@ class Console(cmd.Cmd):
         """
         The next request is because self.connection save the session, so
         we don't need to specify the cookie again in all this file.
-        Why this specific website? Because is the most important.
         This gets the current projects and save them in project_list-
-        so when user use get_projects it will be displayed.
         """
         print("This could take a bit... (Some seconds)")
         html = self.connection.get(
@@ -45,7 +45,10 @@ class Console(cmd.Cmd):
             html.text, flags=re.DOTALL)
         self.project_list = re.findall(r"/[0-9]{1,3}\".*<",
                                   "\n".join(projects_block_html))
-
+        self.dic_projects = {}
+        for project in self.project_list:
+            tokens = project.split("\"")
+            self.dic_projects[tokens[0][1:]] = self.web + "projects" + tokens[0]
 
     def emptyline(self):
         """ User enters an empty line >> pass """
@@ -67,6 +70,9 @@ class Console(cmd.Cmd):
               replace("<", "").
               replace(">", "").
               replace("/", ""))
+
+    # def do_use(self, line):
+    #     """ User must use a project in order to get all the files """
 
 
 console_loop = Console()
