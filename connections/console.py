@@ -1,7 +1,6 @@
 #!/usr/bin/python3
 import cmd
 from logs.environment import get_cookie
-from bs4 import BeautifulSoup
 import requests
 import re
 """ Interactive console to get projects, review, files, and more. """
@@ -50,6 +49,25 @@ class Console(cmd.Cmd):
             tokens = project.split("\"")
             self.dic_projects[tokens[0][1:]] = self.web + "projects" + tokens[0]
 
+    def do_get_projects(self, line):
+        """ Show projects running at the moment """
+        print("\n".join(self.project_list).
+              replace("\"", " | ").
+              replace("<", "").
+              replace(">", "").
+              replace("/", ""))
+
+    def do_use(self, line):
+        """ User must use a project in order to get all the files """
+        if line not in self.dic_projects:
+            print("This ID doesn't correspond of a running project")
+            return
+        self.current = int(line)
+
+    def create_files(self, line):
+        """ Create all the mains, all the needed files with prototypes, README
+        and more... """
+
     def emptyline(self):
         """ User enters an empty line >> pass """
         pass
@@ -62,17 +80,6 @@ class Console(cmd.Cmd):
     def do_quit(self, line):
         """ User types quit >> exit """
         return True
-
-    def do_get_projects(self, line):
-        """ Show projects running at the moment """
-        print("\n".join(self.project_list).
-              replace("\"", " | ").
-              replace("<", "").
-              replace(">", "").
-              replace("/", ""))
-
-    # def do_use(self, line):
-    #     """ User must use a project in order to get all the files """
 
 
 console_loop = Console()
