@@ -1,6 +1,7 @@
 #!/usr/bin/python3
 import cmd
 from logs.environment import get_cookie
+from bs4 import BeautifulSoup
 import requests
 import re
 """ Interactive console to get projects, review, files, and more. """
@@ -25,6 +26,7 @@ class Console(cmd.Cmd):
     cookie = get_cookie()
     web = "https://intranet.hbtn.io/"
     current = 0 # This varable will be used when you select a project
+    html = ""
 
     def __init__(self):
         """ Stablish the connection to persistent """
@@ -58,15 +60,22 @@ class Console(cmd.Cmd):
               replace("/", ""))
 
     def do_use(self, line):
-        """ User must use a project in order to get all the files """
+        """Set a project to work with. Syntax: use <id>"""
         if line not in self.dic_projects:
             print("This ID doesn't correspond of a running project")
             return
-        self.current = int(line)
+        self.current = line
+        self.html = self.connection.get(self.dic_projects[self.current])
 
-    def create_files(self, line):
-        """ Create all the mains, all the needed files with prototypes, README
+    def do_create_files(self, line):
+        """Create all the mains, all the needed files with prototypes, README
         and more... """
+        if (self.current == 0):
+            print("You need to set a project first, syntax: use <id>")
+        files_no_mains = re.findall(r"<li>File: <code>.*</code></li>", self.html.text)
+        lista_nueva = [elm[16:-12] for elm in files_no_mains]
+        for files in lista_nueva:
+            open(files, 'a').close()
 
     def emptyline(self):
         """ User enters an empty line >> pass """
