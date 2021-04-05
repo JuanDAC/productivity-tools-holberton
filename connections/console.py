@@ -46,7 +46,7 @@ class Console(cmd.Cmd):
             html.text, flags=re.DOTALL)
         self.project_list = re.findall(r"/[0-9]{1,3}\".*<",
                                   "\n".join(projects_block_html))
-        self.dic_projects = {}
+        self.dic_projects = {"217":"https://intranet.hbtn.io/projects/217"}
         for project in self.project_list:
             tokens = project.split("\"")
             self.dic_projects[tokens[0][1:]] = self.web + "projects" + tokens[0]
@@ -72,10 +72,26 @@ class Console(cmd.Cmd):
         and more... """
         if (self.current == 0):
             print("You need to set a project first, syntax: use <id>")
+            return
+        # From here search for the no-mains files
         files_no_mains = re.findall(r"<li>File: <code>.*</code></li>", self.html.text)
-        lista_nueva = [elm[16:-12] for elm in files_no_mains]
-        for files in lista_nueva:
+        tokenized_files = [elm[16:-12] for elm in files_no_mains]
+        for files in tokenized_files:
             open(files, 'a').close()
+        #Until here.
+        # From here, searh for the main files
+        main_count = re.findall(r"cat \d*-main.c", self.html.text)
+        files_content = []
+        for element in main_count:
+            main_n = element[4:].split("-")
+            if int(main_n[0]) <= 50:
+                main_regex = re.findall(r"{}.*gcc.* {}".
+                                        format(element, element[4:]),
+                                        self.html.text,
+                                        flags=re.DOTALL)
+                files_content.append(main_regex)
+            else:
+                pass
 
     def emptyline(self):
         """ User enters an empty line >> pass """
