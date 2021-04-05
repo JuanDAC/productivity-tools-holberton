@@ -78,10 +78,9 @@ class Console(cmd.Cmd):
         tokenized_files = [elm[16:-12] for elm in files_no_mains]
         for files in tokenized_files:
             open(files, 'a').close()
-        #Until here.
-        # From here, searh for the main files
+        # Until here are the tasks files (not mains).
+        # From here, search for the main files
         main_count = re.findall(r"cat \d*-main.c", self.html.text)
-        files_content = []
         for element in main_count:
             main_n = element[4:].split("-")
             if int(main_n[0]) <= 50:
@@ -89,9 +88,24 @@ class Console(cmd.Cmd):
                                         format(element, element[4:]),
                                         self.html.text,
                                         flags=re.DOTALL)
-                files_content.append(main_regex)
+                file_content = str(main_regex)
+                file_content = file_content.replace("&quot;", "\"").\
+                               replace("&lt;", "<").\
+                               replace("&gt;", ">").\
+                               replace("\\\\n", "--.n").\
+                               replace("\\n", "\n").\
+                               replace("--.n", "\\n").\
+                               replace("\\\\", "\\")
+                file_content = file_content + '\n'
+                token_text = file_content.split("\n")
+                tokenized_bracket = '\n'.join(token_text[1:]).split("}")
+                file_content = '\n'.join(tokenized_bracket[:-1]) + '}\n'
+                f = open(element[4:], "w")
+                f.write(file_content)
+                f.close()
             else:
                 pass
+        # Until here are the main files.
 
     def emptyline(self):
         """ User enters an empty line >> pass """
