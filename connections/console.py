@@ -1,7 +1,6 @@
 #!/usr/bin/python3
 import cmd
 from logs.environment import get_cookie
-from bs4 import BeautifulSoup
 import requests
 import re
 """ Interactive console to get projects, review, files, and more. """
