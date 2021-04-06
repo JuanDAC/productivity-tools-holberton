@@ -94,11 +94,13 @@ class Console(cmd.Cmd):
                                replace("\\\\n", "--.n").\
                                replace("\\n", "\n").\
                                replace("--.n", "\\n").\
-                               replace("\\\\", "\\")
+                               replace("\\\\", "\\").\
+                               replace("&#39;", "\'").\
+                               replace("&amp;", "&")
                 file_content = file_content + '\n'
                 token_text = file_content.split("\n")
-                tokenized_bracket = '\n'.join(token_text[1:]).split("}")
-                file_content = '\n'.join(tokenized_bracket[:-1]) + '}\n'
+                tokenized_bracket = '\n'.join(token_text[1:]).split("julien@ubuntu")[0:-1]
+                file_content = '\n'.join(tokenized_bracket[:])
                 f = open(element[4:], "w")
                 f.write(file_content)
                 f.close()
