@@ -3,6 +3,7 @@ import cmd
 from logs.environment import get_cookie
 import requests
 import re
+import os
 """ Interactive console to get projects, review, files, and more. """
 
 if __name__ == "__main__":
@@ -26,6 +27,7 @@ class Console(cmd.Cmd):
     web = "https://intranet.hbtn.io/"
     current = 0 # This varable will be used when you select a project
     html = ""
+    dir_name = ""
 
     def __init__(self):
         """ Stablish the connection to persistent """
@@ -65,6 +67,9 @@ class Console(cmd.Cmd):
             return
         self.current = line
         self.html = self.connection.get(self.dic_projects[self.current])
+        self.dir_name = re.search(r"<li>Directory: <code>.*</code></li>", self.html.text)
+        self.dir_name = self.dir_name.group(0)[21:-12]
+        print(self.dir_name)
 
     def do_create_files(self, line):
         """Create all the mains, all the needed files with prototypes, README
@@ -73,10 +78,12 @@ class Console(cmd.Cmd):
             print("You need to set a project first, syntax: use <id>")
             return
         # From here search for the no-mains files
+        if not os.path.exists(self.dir_name):
+            os.makedirs(self.dir_name)
         files_no_mains = re.findall(r"<li>File: <code>.*</code></li>", self.html.text)
         tokenized_files = [elm[16:-12] for elm in files_no_mains]
         for files in tokenized_files:
-            open(files, 'a').close()
+            open(self.dir_name + "/" + files, 'a').close()
         # Until here are the tasks files (not mains).
         # From here, search for the main files
         main_count = re.findall(r"cat \d*-main.c", self.html.text)
@@ -101,7 +108,7 @@ class Console(cmd.Cmd):
                 token_text = file_content.split("\n")
                 tokenized_bracket = '\n'.join(token_text[1:]).split("julien@ubuntu")[0:-1]
                 file_content = '\n'.join(tokenized_bracket[:])
-                f = open(element[4:], "w")
+                f = open(self.dir_name + "/" + element[4:], "w")
                 f.write(file_content)
                 f.close()
             else:
