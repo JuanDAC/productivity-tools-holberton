@@ -23,11 +23,11 @@ class Console(cmd.Cmd):
 
     """
     prompt = "Console-> "
-    cookie = get_cookie() # Cooke for the session.
-    web = "https://intranet.hbtn.io/" # Intranet URL.
-    current = 0 # This varable will be used when you select a project.
-    html = "" # html of the project when do_use activated.
-    dir_name = "" # Name of the project for the directory.
+    cookie = get_cookie()  # Cooke for the session.
+    web = "https://intranet.hbtn.io/"  # Intranet URL.
+    current = 0  # This varable will be used when you select a project.
+    html = ""  # html of the project when do_use activated.
+    dir_name = ""  # Name of the project for the directory.
 
     def __init__(self):
         """ Stablish the connection to persistent """
@@ -46,11 +46,12 @@ class Console(cmd.Cmd):
             r"<ul class=\"list-group gap\">.*<span class=\"bpi-status\">",
             html.text, flags=re.DOTALL)
         self.project_list = re.findall(r"/[0-9]{1,3}\".*<",
-                                  "\n".join(projects_block_html))
-        self.dic_projects = {"217":"https://intranet.hbtn.io/projects/217"}
+                                       "\n".join(projects_block_html))
+        self.dic_projects = {"217": "https://intranet.hbtn.io/projects/217"}
         for project in self.project_list:
             tokens = project.split("\"")
-            self.dic_projects[tokens[0][1:]] = self.web + "projects" + tokens[0]
+            self.dic_projects[tokens[0][1:]] = self.web + \
+                "projects" + tokens[0]
 
     def do_get_projects(self, line):
         """ Show projects running at the moment """
@@ -67,7 +68,8 @@ class Console(cmd.Cmd):
             return
         self.current = line
         self.html = self.connection.get(self.dic_projects[self.current])
-        self.dir_name = re.search(r"<li>Directory: <code>.*</code></li>", self.html.text)
+        self.dir_name = re.search(
+            r"<li>Directory: <code>.*</code></li>", self.html.text)
         self.dir_name = self.dir_name.group(0)[21:-12]
         print(self.dir_name)
 
@@ -79,16 +81,9 @@ class Console(cmd.Cmd):
             print("You need to set a project first, syntax: use <id>")
             return
 
-        if not os.path.exists(self.dir_name): # Create the directory if not exists
+        # Create the directory if not exists
+        if not os.path.exists(self.dir_name):
             os.makedirs(self.dir_name)
-
-        # From here search for the no-mains files
-
-        files_no_mains = re.findall(r"<li>File: <code>.*</code></li>", self.html.text)
-        tokenized_files = [elm[16:-12] for elm in files_no_mains]
-        for files in tokenized_files:
-            open(self.dir_name + "/" + files, 'a').close()
-        # Until here are the tasks files (not mains).
 
         # From here, search for the main files
         main_count = re.findall(r"cat \d*-main.c", self.html.text)
@@ -102,17 +97,18 @@ class Console(cmd.Cmd):
                                         flags=re.DOTALL)
                 file_content = str(main_regex)
                 file_content = file_content.replace("&quot;", "\"").\
-                               replace("&lt;", "<").\
-                               replace("&gt;", ">").\
-                               replace("\\\\n", "--.n").\
-                               replace("\\n", "\n").\
-                               replace("--.n", "\\n").\
-                               replace("\\\\", "\\").\
-                               replace("&#39;", "\'").\
-                               replace("&amp;", "&")
+                    replace("&lt;", "<").\
+                    replace("&gt;", ">").\
+                    replace("\\\\n", "--.n").\
+                    replace("\\n", "\n").\
+                    replace("--.n", "\\n").\
+                    replace("\\\\", "\\").\
+                    replace("&#39;", "\'").\
+                    replace("&amp;", "&")
                 file_content = file_content + '\n'
                 token_text = file_content.split("\n")
-                tokenized_bracket = '\n'.join(token_text[1:]).split("julien@ubuntu")[0:-1]
+                tokenized_bracket = '\n'.join(
+                    token_text[1:]).split("julien@ubuntu")[0:-1]
                 file_content = '\n'.join(tokenized_bracket[:])
 
                 with open(self.dir_name + "/" + element[4:], mode="w+") as f:
@@ -130,20 +126,29 @@ class Console(cmd.Cmd):
         header_name = re.search(r"[a-z]*\.h[^A-Za-z]", self.html.text)
         header_name = header_name.group(0)[:-1]
         header_content = re.findall(r"Prototype: .*", self.html.text)
-        header_str = ""
+        prototypes = []
 
         for prototype in header_content:
             header_tokenize = prototype.split(">")
-            header_str += header_tokenize[1].split("<")[0] + "\n"
+            prototypes.append(header_tokenize[1].split("<")[0] + "\n")
 
         with open(self.dir_name + "/" + header_name, mode="w+") as f:
             f.write("#ifndef " + header_name.upper() + "\n" +
                     "#define " + header_name.upper() + "\n\n" +
-                    header_str + "\n" +
+                    "".join(prototypes) + "\n" +
                     "#endif /* " + header_name.upper() + " */\n"
-            )
+                    )
         # Until here the header is created with all prototypes.
 
+        # From here search for the no-mains files and assign them the prototype
+        files_no_mains = re.findall(r"<li>File: <code>.*</code></li>",
+                                    self.html.text)
+        tokenized_files = [elm[16:-12] for elm in files_no_mains]
+
+        for file_num in range(len(tokenized_files) - 1):
+            with open(self.dir_name + "/" + tokenized_files[file_num], mode='w+') as f:
+                f.write(prototypes[file_num])
+        # Until here are the tasks files (not mains).
 
     def emptyline(self):
         """ User enters an empty line >> pass """
