@@ -124,6 +124,26 @@ class Console(cmd.Cmd):
         # Create a README with the project title
         with open(self.dir_name + "/" + "README.md", mode="w+") as f:
             f.write("# {}\n".format(self.dir_name))
+        # Until here is the README
+
+        # From here, will create the header FILE for C projects
+        header_name = re.search(r"[a-z]*\.h[^A-Za-z]", self.html.text)
+        header_name = header_name.group(0)[:-1]
+        header_content = re.findall(r"Prototype: .*", self.html.text)
+        header_str = ""
+
+        for prototype in header_content:
+            header_tokenize = prototype.split(">")
+            header_str += header_tokenize[1].split("<")[0] + "\n"
+
+        with open(self.dir_name + "/" + header_name, mode="w+") as f:
+            f.write("#ifndef " + header_name.upper() + "\n" +
+                    "#define " + header_name.upper() + "\n\n" +
+                    header_str + "\n" +
+                    "#endif /* " + header_name.upper() + " */\n"
+            )
+        # Until here the header is created with all prototypes.
+
 
     def emptyline(self):
         """ User enters an empty line >> pass """
