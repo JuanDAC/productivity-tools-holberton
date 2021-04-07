@@ -23,11 +23,11 @@ class Console(cmd.Cmd):
 
     """
     prompt = "Console-> "
-    cookie = get_cookie()
-    web = "https://intranet.hbtn.io/"
-    current = 0 # This varable will be used when you select a project
-    html = ""
-    dir_name = ""
+    cookie = get_cookie() # Cooke for the session.
+    web = "https://intranet.hbtn.io/" # Intranet URL.
+    current = 0 # This varable will be used when you select a project.
+    html = "" # html of the project when do_use activated.
+    dir_name = "" # Name of the project for the directory.
 
     def __init__(self):
         """ Stablish the connection to persistent """
@@ -74,19 +74,25 @@ class Console(cmd.Cmd):
     def do_create_files(self, line):
         """Create all the mains, all the needed files with prototypes, README
         and more... """
+
         if (self.current == 0):
             print("You need to set a project first, syntax: use <id>")
             return
-        # From here search for the no-mains files
-        if not os.path.exists(self.dir_name):
+
+        if not os.path.exists(self.dir_name): # Create the directory if not exists
             os.makedirs(self.dir_name)
+
+        # From here search for the no-mains files
+
         files_no_mains = re.findall(r"<li>File: <code>.*</code></li>", self.html.text)
         tokenized_files = [elm[16:-12] for elm in files_no_mains]
         for files in tokenized_files:
             open(self.dir_name + "/" + files, 'a').close()
         # Until here are the tasks files (not mains).
+
         # From here, search for the main files
         main_count = re.findall(r"cat \d*-main.c", self.html.text)
+
         for element in main_count:
             main_n = element[4:].split("-")
             if int(main_n[0]) <= 50:
@@ -108,12 +114,16 @@ class Console(cmd.Cmd):
                 token_text = file_content.split("\n")
                 tokenized_bracket = '\n'.join(token_text[1:]).split("julien@ubuntu")[0:-1]
                 file_content = '\n'.join(tokenized_bracket[:])
-                f = open(self.dir_name + "/" + element[4:], "w")
-                f.write(file_content)
-                f.close()
+
+                with open(self.dir_name + "/" + element[4:], mode="w+") as f:
+                    f.write(file_content)
             else:
                 pass
         # Until here are the main files.
+
+        # Create a README with the project title
+        with open(self.dir_name + "/" + "README.md", mode="w+") as f:
+            f.write("# {}\n".format(self.dir_name))
 
     def emptyline(self):
         """ User enters an empty line >> pass """
