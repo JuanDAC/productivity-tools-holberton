@@ -1,13 +1,13 @@
 # Productivity-tools-holberton
 ## Things to do:
 * Login / Credentials ✔️
-* Repository name
-* File names
-* Main's content
-* Select a project
-* Create a Readme with the info provided by the task
+* Repository name ✔️
+* File names ✔️
+* Main's content ✔️
+* Select a project ✔️
+* Create a Readme with the info provided by the task ✔️
 * Save outputs in a file
-* Tokenize in case of many files
+* Tokenize in case of many files ✔️
 * Add structure of files
 
 
