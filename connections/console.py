@@ -147,7 +147,9 @@ class Console(cmd.Cmd):
 
         for file_num in range(len(tokenized_files) - 1):
             with open(self.dir_name + "/" + tokenized_files[file_num], mode='w+') as f:
-                f.write(prototypes[file_num])
+                f.write("#include \"" + header_name + "\"\n\n"
+                        + "/**\n *\n *\n *\n *\n */\n\n" + prototypes[file_num] +
+                        "{\n\n}\n")
         # Until here are the tasks files (not mains).
 
     def emptyline(self):
