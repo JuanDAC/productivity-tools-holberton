@@ -85,72 +85,80 @@ class Console(cmd.Cmd):
         if not os.path.exists(self.dir_name):
             os.makedirs(self.dir_name)
 
-        # From here, search for the main files
-        main_count = re.findall(r"cat \d*-main.c", self.html.text)
+        # Search for the project type.
+        project_type = re.search(
+            r"Foundations - Low-level programming|Foundations - Higher-level programming ― Python", self.html.text)
+        project_type = project_type.group(0)
 
-        for element in main_count:
-            main_n = element[4:].split("-")
-            if int(main_n[0]) <= 50:
-                main_regex = re.findall(r"{}.*gcc.* {}".
-                                        format(element, element[4:]),
-                                        self.html.text,
-                                        flags=re.DOTALL)
-                file_content = str(main_regex)
-                file_content = file_content.replace("&quot;", "\"").\
-                    replace("&lt;", "<").\
-                    replace("&gt;", ">").\
-                    replace("\\\\n", "--.n").\
-                    replace("\\n", "\n").\
-                    replace("--.n", "\\n").\
-                    replace("\\\\", "\\").\
-                    replace("&#39;", "\'").\
-                    replace("&amp;", "&")
-                file_content = file_content + '\n'
-                token_text = file_content.split("\n")
-                tokenized_bracket = '\n'.join(
-                    token_text[1:]).split("julien@ubuntu")[0:-1]
-                file_content = '\n'.join(tokenized_bracket[:])
+        if "Low-level programming" in project_type:
+            # From here, search for the main files
+            main_count = re.findall(r"cat \d*-main.c", self.html.text)
 
-                with open(self.dir_name + "/" + element[4:], mode="w+") as f:
-                    f.write(file_content)
-            else:
-                pass
-        # Until here are the main files.
+            for element in main_count:
+                main_n = element[4:].split("-")
+                if int(main_n[0]) <= 50:
+                    main_regex = re.findall(r"{}.*gcc.* {}".
+                                            format(element, element[4:]),
+                                            self.html.text,
+                                            flags=re.DOTALL)
+                    file_content = str(main_regex)
+                    file_content = file_content.replace("&quot;", "\"").\
+                        replace("&lt;", "<").\
+                        replace("&gt;", ">").\
+                        replace("\\\\n", "--.n").\
+                        replace("\\n", "\n").\
+                        replace("--.n", "\\n").\
+                        replace("\\\\", "\\").\
+                        replace("&#39;", "\'").\
+                        replace("&amp;", "&")
+                    file_content = file_content + '\n'
+                    token_text = file_content.split("\n")
+                    tokenized_bracket = '\n'.join(
+                        token_text[1:]).split("julien@ubuntu")[0:-1]
+                    file_content = '\n'.join(tokenized_bracket[:])
 
-        # Create a README with the project title
-        with open(self.dir_name + "/" + "README.md", mode="w+") as f:
-            f.write("# {}\n".format(self.dir_name))
-        # Until here is the README
+                    with open(self.dir_name + "/" + element[4:], mode="w+") as f:
+                        f.write(file_content)
+                else:
+                    pass
+                # Until here are the main files.
 
-        # From here, will create the header FILE for C projects
-        header_name = re.search(r"[a-z]*\.h[^A-Za-z]", self.html.text)
-        header_name = header_name.group(0)[:-1]
-        header_content = re.findall(r"Prototype: .*", self.html.text)
-        prototypes = []
+                # Create a README with the project title
+                with open(self.dir_name + "/" + "README.md", mode="w+") as f:
+                    f.write("# {}\n".format(self.dir_name))
+                    # Until here is the README
 
-        for prototype in header_content:
-            header_tokenize = prototype.split(">")
-            prototypes.append(header_tokenize[1].split("<")[0] + "\n")
+                # From here, will create the header FILE for C projects
+                header_name = re.search(r"[a-z]*\.h[^A-Za-z]", self.html.text)
+                header_name = header_name.group(0)[:-1]
+                header_content = re.findall(r"Prototype: .*", self.html.text)
+                prototypes = []
 
-        with open(self.dir_name + "/" + header_name, mode="w+") as f:
-            f.write("#ifndef " + header_name.upper() + "\n" +
-                    "#define " + header_name.upper() + "\n\n" +
-                    "".join(prototypes) + "\n" +
-                    "#endif /* " + header_name.upper() + " */\n"
-                    )
-        # Until here the header is created with all prototypes.
+                for prototype in header_content:
+                    header_tokenize = prototype.split(">")
+                    prototypes.append(header_tokenize[1].split("<")[0] + "\n")
 
-        # From here search for the no-mains files and assign them the prototype
-        files_no_mains = re.findall(r"<li>File: <code>.*</code></li>",
-                                    self.html.text)
-        tokenized_files = [elm[16:-12] for elm in files_no_mains]
+                with open(self.dir_name + "/" + header_name, mode="w+") as f:
+                    f.write("#ifndef " + header_name.upper() + "\n" +
+                            "#define " + header_name.upper() + "\n\n" +
+                            "".join(prototypes) + "\n" +
+                            "#endif /* " + header_name.upper() + " */\n"
+                            )
+                # Until here the header is created with all prototypes.
 
-        for file_num in range(len(tokenized_files) - 1):
-            with open(self.dir_name + "/" + tokenized_files[file_num], mode='w+') as f:
-                f.write("#include \"" + header_name + "\"\n\n"
-                        + "/**\n *\n *\n *\n *\n */\n\n" + prototypes[file_num] +
-                        "{\n\n}\n")
-        # Until here are the tasks files (not mains).
+                # From here search for the no-mains files and assign them the prototype
+                files_no_mains = re.findall(r"<li>File: <code>.*</code></li>",
+                                            self.html.text)
+                tokenized_files = [elm[16:-12] for elm in files_no_mains]
+
+                for file_num in range(len(tokenized_files) - 1):
+                    with open(self.dir_name + "/" + tokenized_files[file_num], mode='w+') as f:
+                        f.write("#include \"" + header_name + "\"\n\n"
+                                + "/**\n *\n *\n *\n *\n */\n\n" + prototypes[file_num] +
+                                "{\n\n}\n")
+                # Until here are the tasks files (not mains).
+        # if the project is a python project:
+#        if "Higher-level programming" in project_type:
 
     def emptyline(self):
         """ User enters an empty line >> pass """
