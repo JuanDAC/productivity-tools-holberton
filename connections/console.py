@@ -47,7 +47,7 @@ class Console(cmd.Cmd):
             html.text, flags=re.DOTALL)
         self.project_list = re.findall(r"/[0-9]{1,3}\".*<",
                                        "\n".join(projects_block_html))
-        self.dic_projects = {"217": "https://intranet.hbtn.io/projects/217"}
+        self.dic_projects = {"254": "https://intranet.hbtn.io/projects/254"}
         for project in self.project_list:
             tokens = project.split("\"")
             self.dic_projects[tokens[0][1:]] = self.web + \
@@ -89,7 +89,6 @@ class Console(cmd.Cmd):
         project_type = re.search(
             r"Foundations - Low-level programming|Foundations - Higher-level programming ― Python", self.html.text)
         project_type = project_type.group(0)
-
         if "Low-level programming" in project_type:
             # From here, search for the main files
             main_count = re.findall(r"cat \d*-main.c", self.html.text)
@@ -157,8 +156,59 @@ class Console(cmd.Cmd):
                                 + "/**\n *\n *\n *\n *\n */\n\n" + prototypes[file_num] +
                                 "{\n\n}\n")
                 # Until here are the tasks files (not mains).
+
         # if the project is a python project:
-#        if "Higher-level programming" in project_type:
+        elif "Higher-level programming" in project_type:
+            # From here, search for the main files
+            main_count = re.findall(r"cat \d*-main.py", self.html.text)
+            for element in main_count:
+                print(element[4:])
+                main_n = element[4:].split("-")
+                if int(main_n[0]) <= 50:
+                    main_regex = re.findall(r"{}.*guillaume.*\./{}".
+                                            format(element, element[4:]),
+                                            self.html.text,
+                                            flags=re.DOTALL)
+                    file_content = str(main_regex)
+                    file_content = file_content.replace("&quot;", "\"").\
+                        replace("&lt;", "<").\
+                        replace("&gt;", ">").\
+                        replace("\\\\n", "--.n").\
+                        replace("\\n", "\n").\
+                        replace("--.n", "\\n").\
+                        replace("\\\\", "\\").\
+                        replace("&#39;", "\'").\
+                        replace("&amp;", "&")
+                    file_content = file_content + '\n'
+                    token_text = file_content.split("\n")[:-2]
+                    tokenized_name = '\n'.join(
+                        token_text[1:]).split("julien@ubuntu|guillaume@ubuntu")[0]
+                    file_content = ''.join(tokenized_name[:])
+                    with open(self.dir_name + "/" + element[4:], mode="w+") as f:
+                        f.write(file_content)
+                else:
+                    pass
+                # Until here are the main files.
+
+                # Create a README with the project title
+                with open(self.dir_name + "/" + "README.md", mode="w+") as f:
+                    f.write("# {}\n".format(self.dir_name))
+                # Until here is the README
+
+                # # From here search for the no-mains files and create the basic structure
+                files_no_mains = re.findall(r"<li>File: <code>.*</code></li>",
+                                            self.html.text)
+                tokenized_files = []
+                for elm in range(len(files_no_mains)):
+                    tokenized_files.append(files_no_mains[elm][16:-12])
+                    if "," in tokenized_files[elm]:
+                        tokenized_files[elm] = tokenized_files[elm].split(",")[
+                            0]
+
+                for file_num in range(len(tokenized_files) - 1):
+                    with open(self.dir_name + "/" + tokenized_files[file_num], mode='w+') as f:
+                        f.write("#!/usr/bin/python3\n" + "\"\"\"\"\"\"\n")
+                # Until here are the tasks files (not mains).
 
     def emptyline(self):
         """ User enters an empty line >> pass """
