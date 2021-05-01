@@ -3,7 +3,6 @@ from getpass import getpass
 import requests
 import urllib
 
-
 def login():
     user = input("Please enter your username: ")
     password = getpass()

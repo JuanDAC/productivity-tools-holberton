@@ -25,5 +25,5 @@ def create_cookie(hbtn_cookie):
 		file.write(str(hbtn_cookie))
 def get_cookie():
 	with open(COOKIE, 'r') as user_cookie:
-		return(literal_eval(ser_cookie.read()))
+		return(literal_eval(user_cookie.read()))
 
