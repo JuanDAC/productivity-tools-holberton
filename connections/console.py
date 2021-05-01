@@ -76,11 +76,9 @@ class Console(cmd.Cmd):
     def do_create_files(self, line):
         """Create all the mains, all the needed files with prototypes, README
         and more... """
-
         if (self.current == 0):
             print("You need to set a project first, syntax: use <id>")
             return
-
         # Create the directory if not exists
         if not os.path.exists(self.dir_name):
             os.makedirs(self.dir_name)
@@ -216,14 +214,15 @@ class Console(cmd.Cmd):
 
     def do_EOF(self, line):
         """ User send EOF (End of file | CTRL + D) >> exit """
+        del (console_loop.connection)
         print()
         return True
 
     def do_quit(self, line):
         """ User types quit >> exit """
+        del (console_loop.connection)
         return True
 
 
 console_loop = Console()
 console_loop.cmdloop()
-del (console_loop.connection)
