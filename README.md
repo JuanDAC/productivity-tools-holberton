@@ -23,7 +23,10 @@
 
 # Instalation:
 ### First steap:
-dowload console file with the next command >>>
+dowload console file with the next command 
 ```bash
 wget https://raw.githubusercontent.com/JuanDAC/productivity-tools-holberton/master/console.py
 ```
+### Second steap:
+Go to your Holberton intranet, copy and paste TOKEN_USER from COOKIES
+![token_user](https://i.imgur.com/QEdPfvX.png)
