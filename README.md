@@ -20,3 +20,8 @@
 * !main-??
 * !task-??
 * !project-???
+
+# Instalation:
+### First steap:
+dowload console file with the next command >>>
+var name = "wget https://raw.githubusercontent.com/JuanDAC/productivity-tools-holberton/master/console.py"
