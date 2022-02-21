@@ -23,7 +23,7 @@ class Console(cmd.Cmd):
 
     """
     prompt = "Console-> "
-    cookie = {'remember_user_token': 'eyJfcmFpbHMiOnsibWVzc2FnZSI6Ilcxc3pNelEwWFN3aU0xcE1VVGRaY1VGVmVtUnZORXQ1UjBRMVExQWlMQ0l4TmpRME5UazBNRGc0TGpNNU9UazNORGdpWFE9PSIsImV4cCI6IjIwMjItMDItMjVUMTU6NDE6MjguNDAwWiIsInB1ciI6bnVsbH19--9c9474a5d1fac4f204b357a90abd475b5bee505e'}  # Cookie for the session.
+    cookie = {'remember_user_token': INSERT YOUR VALUE TOKEN HERE !!! }  # Cookie for the session.
     web = "https://intranet.hbtn.io/"  # Intranet URL.
     current = 0  # This varable will be used when you select a project.
     html = ""  # html of the project when do_use activated.
@@ -88,8 +88,8 @@ class Console(cmd.Cmd):
             os.makedirs(self.dir_name)
 
         # Search for the project type.
-        with open('page.html', 'w') as f:
-            f.write(self.html.text)
+        # with open('page.html', 'w') as f:
+        #     f.write(self.html.text)
         project_type = re.search(
             r"holbertonschool-low_level_programming|holbertonschool-higher_level_programming|holberton-system_engineering-devops", self.html.text)
         project_type = project_type.group(0)
