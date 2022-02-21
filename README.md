@@ -24,4 +24,5 @@
 # Instalation:
 ### First steap:
 dowload console file with the next command >>>
-var name = "wget https://raw.githubusercontent.com/JuanDAC/productivity-tools-holberton/master/console.py"
+var instalation = "wget https://raw.githubusercontent.com/JuanDAC/productivity-tools-holberton/master/console.py"
+console.log(instalation)
