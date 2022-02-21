@@ -1,6 +1,5 @@
 #!/usr/bin/python3
 import cmd
-from logs.environment import get_cookie
 import requests
 import re
 import os
@@ -24,7 +23,7 @@ class Console(cmd.Cmd):
 
     """
     prompt = "Console-> "
-    cookie = {PUT YOUR USER_TOKEN HERE}  # Cookie for the session.
+    cookie = {'remember_user_token': 'eyJfcmFpbHMiOnsibWVzc2FnZSI6Ilcxc3pNelEwWFN3aU0xcE1VVGRaY1VGVmVtUnZORXQ1UjBRMVExQWlMQ0l4TmpRME5UazBNRGc0TGpNNU9UazNORGdpWFE9PSIsImV4cCI6IjIwMjItMDItMjVUMTU6NDE6MjguNDAwWiIsInB1ciI6bnVsbH19--9c9474a5d1fac4f204b357a90abd475b5bee505e'}  # Cookie for the session.
     web = "https://intranet.hbtn.io/"  # Intranet URL.
     current = 0  # This varable will be used when you select a project.
     html = ""  # html of the project when do_use activated.
@@ -48,7 +47,7 @@ class Console(cmd.Cmd):
             html.text, flags=re.DOTALL)
         self.project_list = re.findall(r"/[0-9]{1,3}\".*<",
                                        "\n".join(projects_block_html))
-        self.dic_projects = {'233': 'https://intranet.hbtn.io/projects/233', '231': 'https://intranet.hbtn.io/projects/231'}
+        self.dic_projects = {'218': 'https://intranet.hbtn.io/projects/218', '231': 'https://intranet.hbtn.io/projects/231'}
         for project in self.project_list:
             tokens = project.split("\"")
             self.dic_projects[tokens[0][1:]] = self.web + \
