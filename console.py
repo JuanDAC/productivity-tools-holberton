@@ -24,7 +24,7 @@ class Console(cmd.Cmd):
 
     """
     prompt = "Console-> "
-    cookie = {PONER COOKIE TOKEN AQUI}  # Cooke for the session.
+    cookie = {PUT YOUR USER_TOKEN HERE}  # Cookie for the session.
     web = "https://intranet.hbtn.io/"  # Intranet URL.
     current = 0  # This varable will be used when you select a project.
     html = ""  # html of the project when do_use activated.
