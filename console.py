@@ -4,12 +4,13 @@ from logs.environment import get_cookie
 import requests
 import re
 import os
+from bs4 import BeautifulSoup
 """ Interactive console to get projects, review, files, and more. """
 
-if __name__ == "__main__":
-    print("Use main.py instead of console.py")
-    exit()
-
+# if __name__ == "__main__":
+#     print("Use main.py instead of console.py")
+#     exit()
+#
 
 class Console(cmd.Cmd):
     """
@@ -23,7 +24,7 @@ class Console(cmd.Cmd):
 
     """
     prompt = "Console-> "
-    cookie = get_cookie()  # Cooke for the session.
+    cookie = {PONER COOKIE TOKEN AQUI}  # Cooke for the session.
     web = "https://intranet.hbtn.io/"  # Intranet URL.
     current = 0  # This varable will be used when you select a project.
     html = ""  # html of the project when do_use activated.
@@ -47,7 +48,7 @@ class Console(cmd.Cmd):
             html.text, flags=re.DOTALL)
         self.project_list = re.findall(r"/[0-9]{1,3}\".*<",
                                        "\n".join(projects_block_html))
-        self.dic_projects = {"254": "https://intranet.hbtn.io/projects/254"}
+        self.dic_projects = {'233': 'https://intranet.hbtn.io/projects/233', '231': 'https://intranet.hbtn.io/projects/231'}
         for project in self.project_list:
             tokens = project.split("\"")
             self.dic_projects[tokens[0][1:]] = self.web + \
@@ -68,6 +69,10 @@ class Console(cmd.Cmd):
             return
         self.current = line
         self.html = self.connection.get(self.dic_projects[self.current])
+        # self.soup = BeautifulSoup(self.html.text, 'lxml')
+        # task = self.soup.find(id="task-num-0")
+        # task = task.pre.code
+        # print(task.text.split("\n"))
         self.dir_name = re.search(
             r"<li>Directory: <code>.*</code></li>", self.html.text)
         self.dir_name = self.dir_name.group(0)[21:-12]
@@ -84,15 +89,29 @@ class Console(cmd.Cmd):
             os.makedirs(self.dir_name)
 
         # Search for the project type.
+        with open('page.html', 'w') as f:
+            f.write(self.html.text)
         project_type = re.search(
-            r"Foundations - Low-level programming|Foundations - Higher-level programming ― Python", self.html.text)
+            r"holbertonschool-low_level_programming|holbertonschool-higher_level_programming|holberton-system_engineering-devops", self.html.text)
         project_type = project_type.group(0)
-        if "Low-level programming" in project_type:
+        print(project_type)
+        if "holbertonschool-low_level_programming" in project_type:
             # From here, search for the main files
-            main_count = re.findall(r"cat \d*-main.c", self.html.text)
+            main_count = re.findall(r"cat [0-9]*-?main.c", self.html.text)
+            files = re.findall(r"<li>File: <code>.*</code></li>", self.html.text)
+            for file in files:
+                file = file[16:-12]
+                print("Creating {}...".format(file))
+                with open(os.path.join(self.dir_name, file), 'w') as f:
+                    pass
+            # for main in main_count:
+            #     main = main[4:]
+            #     main_text =re.findall(r"")
+            #
 
             for element in main_count:
-                main_n = element[4:].split("-")
+                print("Creating {}...".format(element))
+                main_n = element[4:]
                 if int(main_n[0]) <= 50:
                     main_regex = re.findall(r"{}.*gcc.* {}".
                                             format(element, element[4:]),
@@ -113,8 +132,7 @@ class Console(cmd.Cmd):
                     tokenized_bracket = '\n'.join(
                         token_text[1:]).split("julien@ubuntu")[0:-1]
                     file_content = '\n'.join(tokenized_bracket[:])
-
-                    with open(self.dir_name + "/" + element[4:], mode="w+") as f:
+                    with open(os.path.join(self.dir_name, main_n), 'w') as f:
                         f.write(file_content)
                 else:
                     pass
@@ -156,7 +174,7 @@ class Console(cmd.Cmd):
                 # Until here are the tasks files (not mains).
 
         # if the project is a python project:
-        elif "Higher-level programming" in project_type:
+        elif "holbertonschool-higher_level_programming" in project_type:
             # From here, search for the main files
             main_count = re.findall(r"cat \d*-main.py", self.html.text)
             for element in main_count:
